@@ -1,6 +1,7 @@
 ﻿using DeckOfCards.Context;
 using System;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace DeckOfCards.Data
 {
@@ -62,6 +63,33 @@ namespace DeckOfCards.Data
             }
 
             return deck;
+        }
+
+        async public Task<Deck> DrawCardsAsync(string deckId, int numberToDraw)
+        {
+            using (var context = new DeckContext())
+            {
+                Deck deck = await context.Decks
+                  .Include(x => x.Cards)
+                  .SingleAsync(x => x.DeckId == deckId);
+
+                foreach (Card card in deck.Cards)
+                {
+                    if (!card.Drawn)
+                    {
+                        card.Drawn = true;
+                        numberToDraw -= 1;
+                    }
+                    if (numberToDraw == 0)
+                    {
+                        break;
+                    }
+                }
+
+                await context.SaveChangesAsync();
+
+                return deck;
+            }
         }
     }
 }
