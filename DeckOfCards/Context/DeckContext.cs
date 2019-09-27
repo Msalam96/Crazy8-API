@@ -1,6 +1,7 @@
-﻿using System.Data.Entity;
+﻿using DeckOfCards.Data;
+using System.Data.Entity;
 
-namespace DeckOfCards.Data
+namespace DeckOfCards.Context
 {
     public class DeckContext : DbContext
     {
