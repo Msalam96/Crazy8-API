@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DeckOfCards.Data
 {
@@ -9,5 +10,6 @@ namespace DeckOfCards.Data
         Task<Deck> GetDeck(string deckId);
         Task<Pile> GetPile(string deckId, string pileName);
         Task<Card> GetCards(string deckId, string value);
+        Task<Pile> AddToPile(string deckId, string pileName, List<string> cardCodes);
     }
 }

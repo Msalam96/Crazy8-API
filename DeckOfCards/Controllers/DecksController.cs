@@ -65,19 +65,22 @@ namespace DeckOfCards.Controllers
                 cards.Add(card);
             }
 
+            pile = await _repository.AddToPile(deckId, pileName, request.CardCodes);
+            deck = await _repository.GetDeck(deckId);
+
             Dictionary<string, ShortPileInfo> piles = new Dictionary<string, ShortPileInfo>();
             
             foreach (var _pile in deck.Piles)
             {
                 ShortPileInfo info = new ShortPileInfo();
-                info.Remaining = cards.Count;
+                info.Remaining = _pile.Cards.Count;
                 piles.Add(_pile.Name, info);
             }
 
             return new AddCardResponse
             {
                 DeckId = deckId,
-                Remaining = pile.Deck.Cards.Count,
+                Remaining = deck.Cards.Where(x => !x.Drawn).Count(),
                 Piles = piles
             };
         }

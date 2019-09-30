@@ -114,7 +114,6 @@ namespace DeckOfCards.Data
             {
                 Deck deck = await GetDeck(deckId);
                 context.Decks.Attach(deck);
-
                 Pile pile = deck.Piles.FirstOrDefault(x => x.Name == pileName);
 
                 if (pile == null)
@@ -138,10 +137,25 @@ namespace DeckOfCards.Data
             using (var context = new DeckContext())
             {
                 Deck deck = await GetDeck(deckId);
-                context.Decks.Attach(deck);
                 Card card = deck.Cards.FirstOrDefault(x => x.Code == value);
 
                 return card;
+            }
+        }
+
+        async public Task<Pile> AddToPile (string deckId, string pileName, List<string> cardCodes)
+        {
+            using (var context = new DeckContext())
+            {
+                Pile pile = await context.Piles.FirstOrDefaultAsync(x => x.Name == pileName && x.Deck.DeckId == deckId);
+                List<Card> cards = await context.Cards.Where(x => cardCodes.Contains(x.Code)).ToListAsync();
+                foreach(var card in cards)
+                {
+                    card.Pile = pile;
+                    pile.Cards.Add(card);
+                }
+                await context.SaveChangesAsync();
+                return pile;
             }
         }
     }
