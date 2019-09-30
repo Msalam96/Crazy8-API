@@ -48,5 +48,41 @@ namespace DeckOfCards.Controllers
                 Removed = cards,
             };
         }
+
+        [Route("{deckId}/piles/{pileName}")]
+        async public Task<AddCardResponse> Patch(string deckId, string pileName, AddPileRequest request)
+        {
+            Deck deck = await _repository.GetDeck(deckId);
+            Pile pile = await _repository.GetPile(deckId, pileName);
+            //[7S, QH] 
+            List<string> cardCodes = request.CardCodes;
+            List<Card> cards = new List<Card>();
+            //List<Card> card = new List<Card>();
+
+            foreach(var cardCode in cardCodes)
+            {
+                Card card = await _repository.GetCards(deckId, cardCode);
+                cards.Add(card);
+            }
+
+            pile = await _repository.AddToPile(deckId, pileName, request.CardCodes);
+            deck = await _repository.GetDeck(deckId);
+
+            Dictionary<string, ShortPileInfo> piles = new Dictionary<string, ShortPileInfo>();
+            
+            foreach (var _pile in deck.Piles)
+            {
+                ShortPileInfo info = new ShortPileInfo();
+                info.Remaining = _pile.Cards.Count;
+                piles.Add(_pile.Name, info);
+            }
+
+            return new AddCardResponse
+            {
+                DeckId = deckId,
+                Remaining = deck.Cards.Where(x => !x.Drawn).Count(),
+                Piles = piles
+            };
+        }
     }
 }
