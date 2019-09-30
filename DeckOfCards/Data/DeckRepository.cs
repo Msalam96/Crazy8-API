@@ -176,6 +176,10 @@ namespace DeckOfCards.Data
                     pile.Cards[swapIndex].Order = swapIndex;
                 }
 
+                context.Piles.Attach(pile);
+                context.Entry(pile).State = EntityState.Modified;
+                context.SaveChanges();
+
                 return true;
             }
         }
