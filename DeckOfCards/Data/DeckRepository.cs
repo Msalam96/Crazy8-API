@@ -139,7 +139,7 @@ namespace DeckOfCards.Data
             {
                 Deck deck = await GetDeck(deckId);
                 context.Decks.Attach(deck);
-                Card card = deck.Cards.FirstOrDefault(x => x.Value == value);
+                Card card = deck.Cards.FirstOrDefault(x => x.Code == value);
 
                 return card;
             }

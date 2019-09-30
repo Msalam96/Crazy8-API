@@ -56,13 +56,13 @@ namespace DeckOfCards.Controllers
             Pile pile = await _repository.GetPile(deckId, pileName);
             //[7S, QH] 
             List<string> cardCodes = request.CardCodes;
+            List<Card> cards = new List<Card>();
             //List<Card> card = new List<Card>();
 
             foreach(var cardCode in cardCodes)
             {
                 Card card = await _repository.GetCards(deckId, cardCode);
-                pile.Cards.Add(card);
-
+                cards.Add(card);
             }
 
             Dictionary<string, ShortPileInfo> piles = new Dictionary<string, ShortPileInfo>();
@@ -70,7 +70,7 @@ namespace DeckOfCards.Controllers
             foreach (var _pile in deck.Piles)
             {
                 ShortPileInfo info = new ShortPileInfo();
-                info.Remaining = _pile.Cards.Count;
+                info.Remaining = cards.Count;
                 piles.Add(_pile.Name, info);
             }
 
