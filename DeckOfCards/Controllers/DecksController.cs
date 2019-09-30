@@ -85,7 +85,7 @@ namespace DeckOfCards.Controllers
             };
         }
 
-        [Route("deckId/pile/pileName/shuffle")]
+        [Route("{deckId}/pile/{pileName}/shuffle")]
         async public Task<bool> Post(string deckId, string pileName)
         {
             return await _repository.Shuffle(deckId, pileName);
