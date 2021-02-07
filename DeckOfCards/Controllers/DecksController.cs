@@ -2,6 +2,7 @@
 using DeckOfCards.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -84,5 +85,13 @@ namespace DeckOfCards.Controllers
                 Piles = piles
             };
         }
+
+        [Route("{deckId}/pile/{pileName}/shuffle")]
+        async public Task<IHttpActionResult> Post(string deckId, string pileName)
+        {
+            await _repository.Shuffle(deckId, pileName);
+            return Content(HttpStatusCode.Created, "201 Success");
+        }
+
     }
 }

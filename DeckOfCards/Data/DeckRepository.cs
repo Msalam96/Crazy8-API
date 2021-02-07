@@ -158,5 +158,30 @@ namespace DeckOfCards.Data
                 return pile;
             }
         }
+
+        async public Task<bool> Shuffle(string deckId, string pileName)
+        {
+            using (var context = new DeckContext())
+            {
+                Pile pile = await context.Piles.FirstOrDefaultAsync(x => x.Name == pileName && x.Deck.DeckId == deckId);
+                Random random = new Random();
+
+                for (int cardIndex = pile.Cards.Count - 1; cardIndex >= 0; cardIndex -= 1)
+                {
+                    int swapIndex = random.Next(0, cardIndex);
+                    Card card = pile.Cards[swapIndex];
+                    pile.Cards[swapIndex] = pile.Cards[cardIndex];
+                    pile.Cards[cardIndex] = card;
+                    pile.Cards[cardIndex].Order = cardIndex;
+                    pile.Cards[swapIndex].Order = swapIndex;
+                }
+
+                context.Piles.Attach(pile);
+                context.Entry(pile).State = EntityState.Modified;
+                context.SaveChanges();
+
+                return true;
+            }
+        }
     }
 }
